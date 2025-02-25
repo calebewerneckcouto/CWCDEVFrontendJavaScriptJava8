@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CWCDEV CODE</title>
+    <style>
+        /* Estilo para o tema dark */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 80%;
+            max-width: 830px;
+        }
+
+        h2, h3 {
+            color: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #252525;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+            color: #e0e0e0;
+        }
+
+        th {
+            background-color: #333;
+        }
+
+        button {
+            background-color: #ff9800;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #fb8c00;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Estilo para o botão de visualizar */
+        .view-btn {
+            background-color: #000; /* Dourado */
+            color: #ffd700; /* Texto preto */
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .view-btn:hover {
+            background-color: #ffd700; /* Tom de dourado mais claro */
+            color: #3d3922; /* Texto preto */
+            
+        }
+
+        .edit-btn {
+            background-color: blue; /* Dourado */
+            color: white; /* Texto preto */
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .edit-btn:hover {
+            background-color: white; /* Tom de dourado mais claro */
+            color: blue; /* Texto preto */
+        }
+
+        /* Estilo para o Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 60px;
+        }
+
+        .profile-img {
+            width: 80px; /* Tamanho do círculo */
+            height: 80px;
+            border-radius: 50%; /* Torna a imagem circular */
+            border: 5px solid #ffd700; /* Borda dourada */
+            overflow: hidden; /* Garante que a imagem não ultrapasse o círculo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px; /* Espaço abaixo da imagem */
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem se ajustar ao círculo sem deformar */
+        }
+
+        .modal-content {
+            background-color: #121212;
+            color: #ffd700; /* Letras douradas */
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            font-family: monospace;
+            white-space: pre-wrap; /* Para manter o formato do código */
+            max-height: 80vh; /* Limita a altura do modal */
+            overflow-y: auto; /* Permite rolagem vertical */
+        }
+
+        .close {
+            color: #fff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #ffd700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+       
+        <h2>
+            <div class="profile-img">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMQAAACUCAMAAAD79nauAAAAhFBMVEUUGB8YGygTFxwRFhUAAAAYGyoADAAADgBlUeUJEgASFxpwWf8RFhcFEQAWGSMQFhMNFAhPQbF0XP9hTtsuKWFSQ7ltV/hVRb9aScwjIkkvKmY7MoFCN5FpVO40LW9LPqgbHTI/NYo3MHkfHzwsKFsiIUNHO50nJFEbHDUbGzwQFCgABgD8pO4LAAAEIUlEQVR4nO3ayXLzKBAAYATRgpAEMpLQvlmLZ/z+7zctO/VXquYwU/FBxtVfDtku3YHuBiqEIIQQQgghhBBCCCGEEEIIIYQQQgghhBD6gUp6dggvo+7u2p+Fny7y7Bhe5pczOzuGl911S2zfT3IMpjA8O4oXxVNXq7ODeJG8aV1ZXtjSTYsptLskpLsV5XoshL15qOtQBBlUBFPJ2bH8ElVVWnSzpJJf68rOLCKZlSJoiOJVuzXV2eH8CksafdGzjG+tMU1oZYNibtuJMlO8NsGwcivrOnIgB1NxPgdBm9g57CibYR0eOXQTic4O53dkBTVdc7WXl8GxNAcie1HknPKt6Hp+djC/Fc0imOLQyYXFSchaBD0PRyPExG09h8tKd1NM+CCEXuzsTccLR3PJPQLNqRDpaOvtlI15kHEqc1GI2dalIKrShod810I8z+JW4rXePBLPgdC7tUmQuM5rTjxzScfnuKPUohNUGEaPCymvpzH0TJE9J0UkmbLkRTOMJHWvS3aD6cDdm7yVzbOuZWN0OUsbhgYNb3Wq8/nZVmmomozLiMF3I/GkEcaCQzllbXcx3I+VBIxFTsjc21rt+w2CZ3ctmvc/hai9KArdNnNfg76fm6kd0lKX/WMb8Vbk/tkx/je4T+el1sE3rbUZ2sz1n3//OBWDBUkQFft3Lx6vKxhD7nl+HKvvalZ/Fd1uyfimay05V0qyiEKzUvDV4+fcNcVmw0IAeiuD/eYSBtFHyVjt/bTDmIMjiAla7+zo/qdw7YTO02Hb2m0boEI6ke80GufULJaswzEc+rQMukJAoyq6QJf5MO0kWdo+fv/2+gflfK3nqT00fbaGPocpXnGLUiDHI6yb+PwPdQxpatmbByWzaQiMbeDzcamkJW31J+qkl6A0OZT2kBoYfWlt15O4ijlnZMm7y0VAZQsBn7t8+f7t+x/+IMbY64e2uTJ2y5rhWIPSpO28rM737y14lJVxo4elWh0Kg+5xeK3W60ikYs8VYH7WvnuHityyKK5fXqyiRztiB7jjURoyxWP/y9nKlb35dZvXAvZ/OcwVdCbvB87cZd7KwPRXHmdvnkVUTSmcMY6C7uAUXh500HVQ31259de//XtdVm9eFjSScIV2rvu8bdBaDyZPt6mHKvHu9zgzhbbhCQoKgI31yu9fP9zDah7K4tKlK7flRZNeG7iQfgu6x6TQ+bYo37clBRA96zqWyTg6jMNOOu53lr7wUyiSyPL/60AIIYQQQgihN+eAJLHrsfdf3G+Wp5E4jyycs+N4UfIRWRDXOT7OjuJFifso8LPDeNFRGI7tS/FotdYvBaRgfZ8lj+1kexLJsRS2J/EJNZF8TBKW5/BBu+nsKF7zCZvpE6r6E3L4hM2UJNan8BE5kA9IAZKwPwWEEHpT/wCTLUnlsiCetgAAAABJRU5ErkJggg==" alt="Perfil" class="img-circle" />
+            </div>
+        </h2>
+        <button onclick="logout()">Logout</button>
+        <button onclick="window.location.href='create_code.html'">Criar Código</button>
+        <input type="text" id="searchInput" placeholder="Pesquisar código..." />
+
+        <!-- Botão para buscar -->
+        <button onclick="searchCodes()">Buscar</button>
+    
+        <table id="codesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Language</th>
+                    <th>Description</th>
+                    <th>ImgUrl</th>
+                    <th>Actions</th> <!-- Coluna para as ações -->
+                    <th>Delete</th>
+                    <th>Update</th> <!-- Coluna de atualização -->
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Modal para visualização de código -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <pre id="codeContent"></pre>
+            <button id="copyButton" onclick="copyCode()">Copy Code</button> <!-- Botão de copiar código -->
+        </div>
+    </div>
+
+    <!-- Modal para edição de código -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <h3>Edit Code</h3>
+            <input type="text" id="updateLanguage" class="input-field" placeholder="Language">
+            <input type="text" id="updateDescription" class="input-field" placeholder="Description">
+            <input type="text" id="updateImgUrl" class="input-field" placeholder="Img URL">
+            <textarea id="updateCode" class="input-field" rows="10" placeholder="Code"></textarea>
+            <button onclick="updateCode()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        let editingCodeId = null;
+
+        function fetchCodes() {
+            fetch("http://localhost:8080/codigos/", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("auth_token"),
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem("auth_token");
+                        window.location.href = "index.html";
+                    }
+                    throw new Error("Erro ao buscar códigos");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#codesTable tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(code => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${code.id}</td>
+                        <td>${code.linguagem}</td>
+                        <td>${code.descricao}</td>
+                        <td><img src="${code.imgUrl}" alt="Preview" style="width: 100px; height: auto; border-radius: 4px;"></td>
+                        <td>
+                            <button onclick="viewCode('${code.id}', \`${encodeURIComponent(code.codigo)}\`)" class="view-btn">Visualizar</button>
+                        </td>
+                        <td>
+                            <button onclick="deleteCode('${code.id}')" class="delete-btn">Deletar</button>
+                        </td>
+                        <td>
+                            <button onclick="editCode('${code.id}', '${code.linguagem}', '${code.descricao}', '${code.imgUrl}', \`${encodeURIComponent(code.codigo)}\`)" class="edit-btn">Atualizar</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error(error));
+        }
+
+        function logout() {
+            localStorage.removeItem("auth_token");
+            window.location.href = "index.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!localStorage.getItem("auth_token")) {
+                window.location.href = "index.html";
+            } else {
+                fetchCodes();
+            }
+        });
+
+        // Função para abrir o modal de visualização
+        function viewCode(id, code) {
+            const modal = document.getElementById("codeModal");
+            const codeContent = document.getElementById("codeContent");
+            codeContent.textContent = decodeURIComponent(code); // Exibe o código no modal
+            modal.style.display = "block"; // Mostra o modal
+        }
+
+        // Função para fechar o modal de visualização
+        function closeModal() {
+            const modal = document.getElementById("codeModal");
+            modal.style.display = "none";
+        }
+
+        // Função para copiar o código
+        function copyCode() {
+            const codeContent = document.getElementById("codeContent");
+            const range = document.createRange();
+            range.selectNode(codeContent);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+        }
+
+        // Função para deletar o código
+        function deleteCode(codeId) {
+            fetch(`http://localhost:8080/codigos/${codeId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("auth_token"),
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erro ao deletar código");
+                }
+                alert("Código deletado com sucesso!");
+                fetchCodes(); // Atualiza a tabela
+            })
+            .catch(error => console.error(error));
+        }
+
+        // Função para abrir o modal de atualização
+        function editCode(id, language, description, imgUrl, code) {
+            editingCodeId = id;
+            document.getElementById("updateLanguage").value = language;
+            document.getElementById("updateDescription").value = description;
+            document.getElementById("updateImgUrl").value = imgUrl;
+            document.getElementById("updateCode").value = decodeURIComponent(code);
+            document.getElementById("updateModal").style.display = "block";
+        }
+
+        // Função para fechar o modal de atualização
+        function closeUpdateModal() {
+            document.getElementById("updateModal").style.display = "none";
+        }
+
+        // Função para salvar as alterações
+        function updateCode() {
+            const updatedCode = {
+                linguagem: document.getElementById("updateLanguage").value,
+                descricao: document.getElementById("updateDescription").value,
+                imgUrl: document.getElementById("updateImgUrl").value,
+                codigo: document.getElementById("updateCode").value
+            };
+
+            fetch(`http://localhost:8080/codigos/${editingCodeId}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("auth_token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedCode)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erro ao atualizar código");
+                }
+                alert("Código atualizado com sucesso!");
+                fetchCodes(); // Atualiza a tabela
+                closeUpdateModal(); // Fecha o modal de edição
+            })
+            .catch(error => console.error(error));
+        }
+
+        // Função para realizar a busca
+        async function searchCodes() {
+    const keyword = document.getElementById('searchInput').value.trim(); // Trim whitespace
+
+    if (keyword === "") {
+        alert("Please enter a search term.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8080/codigos/search?keyword=${keyword}`, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("auth_token"), // Include token for search
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // Get error details from server
+            throw new Error(`Search failed: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        const tbody = document.querySelector("#codesTable tbody"); // Correct selector!
+        tbody.innerHTML = ""; // Clear the table
+
+        if (data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='7'>No codes found.</td></tr>"; // Display "no results" message
+            return;
+        }
+
+        data.forEach(item => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${item.id || ""}</td>  <td>${item.linguagem}</td>
+                <td>${item.descricao}</td>
+                <td><img src="${item.imgUrl || ""}" alt="Preview" style="width: 100px; height: auto; border-radius: 4px;"></td>
+                <td><button onclick="viewCode('${item.id}', \`${encodeURIComponent(item.codigo)}\`)" class="view-btn">Visualizar</button></td>
+                <td><button onclick="deleteCode('${item.id}')" class="delete-btn">Deletar</button></td>
+                <td><button onclick="editCode('${item.id}', '${item.linguagem}', '${item.descricao}', '${item.imgUrl}', \`${encodeURIComponent(item.codigo)}\`)" class="edit-btn">Atualizar</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("Search error:", error);
+        alert("An error occurred during the search: " + error.message);
+    }
+}
+    </script>
+</body>
+</html>
